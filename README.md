@@ -62,12 +62,6 @@ Kubernetes
     * [🔁 How They All Interact in Real-World Architecture](#-how-they-all-interact-in-real-world-architecture)
     * [✅ Summary Table](#-summary-table-1)
     * [Steps to create one custom resource (CR)](#steps-to-create-one-custom-resource-cr)
-  * [✅ Purpose of `make run`](#-purpose-of-make-run)
-  * [🧠 Why Use It?](#-why-use-it)
-  * [⚙️ What It Does](#-what-it-does)
-  * [Example Workflow with `make run`](#example-workflow-with-make-run)
-  * [🚀 When to Stop Using `make run`](#-when-to-stop-using-make-run)
-  * [✅ Summary](#-summary-1)
     * [UNIVERSAL WORKFLOW FOR CUSTOM RESOURCE SETUP (ACROSS CLOUDS)](#universal-workflow-for-custom-resource-setup-across-clouds)
     * [**2️⃣ Connect to Your Cloud Cluster**](#2-connect-to-your-cloud-cluster)
 <!-- TOC -->
@@ -164,7 +158,7 @@ metadata:
   name: myapp
 spec:
   replicas: 1
-  selector:
+  selector: #The selector ensures that the Deployment knows which Pods it is responsible for managing. template.metadata.labels must match
     matchLabels:
       app: myapp
   template:
@@ -459,7 +453,7 @@ curl http://my-external-service.default.svc.cluster.local
 Kubernetes resolves it to:
 
 ```bash
-external.example.com
+external.example.com # this defined in service under spec
 ```
 
 > There’s no traffic proxying — **the DNS is rewritten** and the request is made directly to the external name.
@@ -1786,17 +1780,13 @@ kubectl apply -f config/samples/mycompany_v1_databasebackup.yaml
 
 -------
 
-Great question — let's clarify **why you might use `make run` locally** when developing a Kubernetes operator using Kubebuilder.
-
----
-
-## ✅ Purpose of `make run`
+**Purpose of `make run`**
 
 `make run` **runs the operator (controller)** as a **Go process on your local machine**, not in the cluster. This is mainly used during **development and testing**.
 
 ---
 
-## 🧠 Why Use It?
+**Why Use It**
 
 | Reason                         | Explanation                                                                    |
 | ------------------------------ | ------------------------------------------------------------------------------ |
@@ -1807,7 +1797,7 @@ Great question — let's clarify **why you might use `make run` locally** when d
 
 ---
 
-## ⚙️ What It Does
+**What It Does**
 
 When you run:
 
@@ -1829,7 +1819,7 @@ go run ./main.go
 
 ---
 
-## Example Workflow with `make run`
+**Example Workflow with `make run`**
 
 1. You’re coding the logic in `databasebackup_controller.go`.
 2. You run `make install` to install the CRD once.
@@ -1851,7 +1841,7 @@ go run ./main.go
 
 ---
 
-## 🚀 When to Stop Using `make run`
+**When to Stop Using `make run`**
 
 Once your operator logic is tested and ready:
 
@@ -1860,15 +1850,13 @@ Once your operator logic is tested and ready:
 
 ---
 
-## ✅ Summary
+**Summary**
 
 | `make run` is best for:               |
 | ------------------------------------- |
 | ✅ Local testing/debugging             |
 | ✅ Rapid development cycle             |
 | ❌ Not meant for production deployment |
-
-Would you like to see how to simulate a real backup task using a Kubernetes Job inside your controller — while still using `make run`?
 
 
 ### UNIVERSAL WORKFLOW FOR CUSTOM RESOURCE SETUP (ACROSS CLOUDS)
