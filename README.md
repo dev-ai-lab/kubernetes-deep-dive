@@ -1,5 +1,76 @@
+Kubernetes
 
-# Kubernetes
+<!-- TOC -->
+  * [Kubernetes architecture](#kubernetes-architecture)
+    * [**1. Separation of Concerns**](#1-separation-of-concerns)
+    * [**2. Modularity**](#2-modularity)
+    * [**3. Reusability and Scaling**](#3-reusability-and-scaling)
+    * [**4. Declarative + Automated Control**](#4-declarative--automated-control)
+    * [Analogy](#analogy)
+  * [Creating deployment](#creating-deployment)
+    * [Full YAML Example (Recommended for Production)](#full-yaml-example-recommended-for-production)
+  * [Kubernetes Labels & Selectors (2025 Updated Notes)](#kubernetes-labels--selectors-2025-updated-notes)
+    * [1. Organizing Kubernetes Objects with Labels](#1-organizing-kubernetes-objects-with-labels)
+    * [2. Modifying Labels on Existing Objects](#2-modifying-labels-on-existing-objects)
+    * [3. Label Selectors for Operations](#3-label-selectors-for-operations)
+    * [Advanced Label Selectors](#advanced-label-selectors)
+  * [Kubernetes Services](#kubernetes-services)
+    * [🧠 Summary Table](#-summary-table)
+  * [Connecting to services outside k8s cluster](#connecting-to-services-outside-k8s-cluster)
+    * [What is `kind: Endpoints`?](#what-is-kind-endpoints)
+    * [When to use](#when-to-use)
+    * [Important notes](#important-notes)
+    * [Example:](#example)
+  * [How does an `ExternalName` service link to its target?](#how-does-an-externalname-service-link-to-its-target)
+    * [📌 Key Differences](#-key-differences)
+    * [🔍 How it Works](#-how-it-works)
+    * [Example](#example-1)
+    * [🔗 Key Point](#-key-point)
+  * [Exposing services to external clients](#exposing-services-to-external-clients)
+    * [🔹 2. **LoadBalancer Service (AWS ELB)**](#-2-loadbalancer-service-aws-elb)
+      * [🧾 YAML](#-yaml)
+      * [✅ Steps](#-steps)
+    * [🔹 3. **Ingress (with NGINX Ingress Controller)**](#-3-ingress-with-nginx-ingress-controller)
+      * [🧾 YAML for your app + ingress](#-yaml-for-your-app--ingress)
+      * [✅ Steps](#-steps-1)
+    * [🧠 Summary](#-summary)
+    * [✅ Call Chain Recap with Roles](#-call-chain-recap-with-roles)
+      * [Step-by-step call chain `curl http://myapp.example.com/`](#step-by-step-call-chain-curl-httpmyappexamplecom)
+      * [🔗 Example (For `myapp.example.com`):](#-example-for-myappexamplecom)
+  * [🔄 Diagram Summary:](#-diagram-summary)
+    * [🔧 Detailed Walkthrough with Comments in YAML](#-detailed-walkthrough-with-comments-in-yaml)
+    * [🔄 Final Call Chain (with Responsibilities)](#-final-call-chain-with-responsibilities)
+    * [Ingress Multiple services](#ingress-multiple-services)
+      * [1. Services for each app:](#1-services-for-each-app)
+      * [2. Ingress Resource](#2-ingress-resource)
+      * [🌐 How Requests Are Routed:](#-how-requests-are-routed)
+      * [✅ What You Need:](#-what-you-need)
+  * [Final example with microservices architecture](#final-example-with-microservices-architecture)
+    * [1️⃣ ClusterIssuer (for cert-manager TLS)](#1-clusterissuer-for-cert-manager-tls)
+    * [2️⃣ Ingress Controller Deployment + 3️⃣ LoadBalancer Service (ELB)](#2-ingress-controller-deployment--3-loadbalancer-service-elb)
+    * [4️⃣ Ingress Resource with TLS and Path Routing](#4-ingress-resource-with-tls-and-path-routing)
+    * [5️⃣ ClusterIP Services (Internal Routing to Pods)](#5-clusterip-services-internal-routing-to-pods)
+    * [6️⃣ Deployments (Pods Running Application Code)](#6-deployments-pods-running-application-code)
+    * [REQUEST FLOW FROM CLIENT TO PODS](#request-flow-from-client-to-pods)
+  * [Templating using Help and Kustomize](#templating-using-help-and-kustomize)
+  * [Custom Resources in k8s](#custom-resources-in-k8s)
+    * [**1. Kubernetes Resource Model & Controller Pattern**](#1-kubernetes-resource-model--controller-pattern)
+    * [**2. Writing Kubernetes Operators (Kubebuilder or Operator SDK)**](#2-writing-kubernetes-operators-kubebuilder-or-operator-sdk)
+    * [**3. Kubernetes RBAC (Role-Based Access Control)**](#3-kubernetes-rbac-role-based-access-control)
+    * [**4. CNI (Container Network Interface)**](#4-cni-container-network-interface)
+    * [**5. OIDC (OpenID Connect)**](#5-oidc-openid-connect)
+    * [🔁 How They All Interact in Real-World Architecture](#-how-they-all-interact-in-real-world-architecture)
+    * [✅ Summary Table](#-summary-table-1)
+    * [Steps to create one custom resource (CR)](#steps-to-create-one-custom-resource-cr)
+  * [✅ Purpose of `make run`](#-purpose-of-make-run)
+  * [🧠 Why Use It?](#-why-use-it)
+  * [⚙️ What It Does](#-what-it-does)
+  * [Example Workflow with `make run`](#example-workflow-with-make-run)
+  * [🚀 When to Stop Using `make run`](#-when-to-stop-using-make-run)
+  * [✅ Summary](#-summary-1)
+    * [UNIVERSAL WORKFLOW FOR CUSTOM RESOURCE SETUP (ACROSS CLOUDS)](#universal-workflow-for-custom-resource-setup-across-clouds)
+    * [**2️⃣ Connect to Your Cloud Cluster**](#2-connect-to-your-cloud-cluster)
+<!-- TOC -->
 ## Kubernetes architecture
 
 The core of Kubernetes design philosophy: **separation of concerns, modularity, and declarative control**.
@@ -59,7 +130,7 @@ This makes the system **self-healing** and **declarative**, ideal for GitOps and
 
 ---
 
-### TL;DR
+### Analogy
 
 > Kubernetes is built like UNIX: lots of small pieces, each doing one job well.
 
@@ -227,7 +298,7 @@ kubectl get pods -l env=production
 
 ---
 
-## Advanced Label Selectors
+### Advanced Label Selectors
 
 You can combine multiple conditions:
 
@@ -279,33 +350,31 @@ Operators:
 
 ---
 
-### ✅ 1. `curl http://myapp.default.svc.cluster.local`
+1. `curl http://myapp.default.svc.cluster.local`
 
-* This is the **fully qualified domain name (FQDN)**.
-* Explicitly says:
-
-  * `myapp` = service name
-  * `default` = namespace
-  * `svc` = it's a service
-  * `cluster.local` = Kubernetes internal DNS domain
-* ✅ **Always works**, regardless of where the request comes from inside the cluster.
-
----
-
-### ✅ 2. `curl http://myapp.default`
-
-* This is a **partially qualified name**.
-* Resolves correctly if the pod is inside the cluster DNS domain (which it is).
-* It still points to the `myapp` service in the `default` namespace.
-* ✅ Works inside the same namespace or with DNS search paths.
+- This is the **fully qualified domain name (FQDN)**. 
+- Explicitly says:
+  - `myapp` = service name
+  - `default` = namespace
+  - `svc` = it's a service
+  - `cluster.local` = Kubernetes internal DNS domain
+- **Always works**, regardless of where the request comes from inside the cluster.
 
 ---
 
-### ✅ 3. `curl http://myapp`
+2. `curl http://myapp.default`
 
-* This uses the **shortest name** (just the service name).
-* Relies entirely on Kubernetes **DNS search path resolution**.
-* ✅ Works **only if you're in the same namespace** as the service (here, `default`).
+   - This is a **partially qualified name**.
+   - Resolves correctly if the pod is inside the cluster DNS domain (which it is).
+   - It still points to the `myapp` service in the `default` namespace.
+   - ✅ Works inside the same namespace or with DNS search paths.
+
+---
+3. `curl http://myapp`
+
+   - This uses the **shortest name** (just the service name).
+   - Relies entirely on Kubernetes **DNS search path resolution**.
+   - ✅ Works **only if you're in the same namespace** as the service (here, `default`).
 
 ---
 
