@@ -1660,7 +1660,7 @@ Great! Let's **scaffold a Kubernetes Operator in Go using Kubebuilder** for the 
 
 ```bash
 mkdir database-backup-operator && cd database-backup-operator
-kubebuilder init --domain=mycompany.io --repo=github.com/you/database-backup-operator
+kubebuilder init --domain=dev-ai.io --repo=github.com/dev-ai-lab/database-backup-operator
 ```
 
 ---
@@ -1668,7 +1668,7 @@ kubebuilder init --domain=mycompany.io --repo=github.com/you/database-backup-ope
 **2. Create the API and Controller**
 
 ```bash
-kubebuilder create api --group=mycompany --version=v1 --kind=DatabaseBackup
+kubebuilder create api --group=db --version=v1 --kind=DatabaseBackup
 ```
 
 You’ll be prompted:
@@ -1754,7 +1754,7 @@ make deploy IMG=your-registry/db-operator:v1
 **7. Create a DatabaseBackup Resource**
 
 ```yaml
-apiVersion: mycompany.io/v1
+apiVersion: db.dev-ai.io/v1
 kind: DatabaseBackup
 metadata:
   name: test-backup
