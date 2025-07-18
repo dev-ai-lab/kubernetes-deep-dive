@@ -15,36 +15,36 @@ Kubernetes
     * [3. Label Selectors for Operations](#3-label-selectors-for-operations)
     * [Advanced Label Selectors](#advanced-label-selectors)
   * [Kubernetes Services](#kubernetes-services)
-    * [🧠 Summary Table](#-summary-table)
+    * [Summary Table](#summary-table)
   * [Connecting to services outside k8s cluster](#connecting-to-services-outside-k8s-cluster)
     * [What is `kind: Endpoints`?](#what-is-kind-endpoints)
     * [When to use](#when-to-use)
     * [Important notes](#important-notes)
     * [Example:](#example)
   * [How does an `ExternalName` service link to its target?](#how-does-an-externalname-service-link-to-its-target)
-    * [📌 Key Differences](#-key-differences)
-    * [🔍 How it Works](#-how-it-works)
+    * [Key Differences](#key-differences)
+    * [How it Works](#how-it-works)
     * [Example](#example-1)
-    * [🔗 Key Point](#-key-point)
+    * [Key Point](#key-point)
   * [Exposing services to external clients](#exposing-services-to-external-clients)
-    * [🔹 2. **LoadBalancer Service (AWS ELB)**](#-2-loadbalancer-service-aws-elb)
-      * [🧾 YAML](#-yaml)
-      * [✅ Steps](#-steps)
-    * [🔹 3. **Ingress (with NGINX Ingress Controller)**](#-3-ingress-with-nginx-ingress-controller)
-      * [🧾 YAML for your app + ingress](#-yaml-for-your-app--ingress)
-      * [✅ Steps](#-steps-1)
-    * [🧠 Summary](#-summary)
-    * [✅ Call Chain Recap with Roles](#-call-chain-recap-with-roles)
+    * [2. **LoadBalancer Service (AWS ELB)**](#2-loadbalancer-service-aws-elb)
+      * [YAML](#yaml)
+      * [Steps](#steps)
+    * [3. **Ingress (with NGINX Ingress Controller)**](#3-ingress-with-nginx-ingress-controller)
+      * [YAML for your app + ingress](#yaml-for-your-app--ingress)
+      * [Steps](#steps-1)
+    * [Summary](#summary)
+    * [Call Chain Recap with Roles](#call-chain-recap-with-roles)
       * [Step-by-step call chain `curl http://myapp.example.com/`](#step-by-step-call-chain-curl-httpmyappexamplecom)
-      * [🔗 Example (For `myapp.example.com`):](#-example-for-myappexamplecom)
-  * [🔄 Diagram Summary:](#-diagram-summary)
-    * [🔧 Detailed Walkthrough with Comments in YAML](#-detailed-walkthrough-with-comments-in-yaml)
-    * [🔄 Final Call Chain (with Responsibilities)](#-final-call-chain-with-responsibilities)
+      * [Example (For `myapp.example.com`):](#example-for-myappexamplecom)
+  * [Diagram Summary:](#diagram-summary)
+    * [Detailed Walkthrough with Comments in YAML](#detailed-walkthrough-with-comments-in-yaml)
+    * [Final Call Chain (with Responsibilities)](#final-call-chain-with-responsibilities)
     * [Ingress Multiple services](#ingress-multiple-services)
       * [1. Services for each app:](#1-services-for-each-app)
       * [2. Ingress Resource](#2-ingress-resource)
-      * [🌐 How Requests Are Routed:](#-how-requests-are-routed)
-      * [✅ What You Need:](#-what-you-need)
+      * [How Requests Are Routed:](#how-requests-are-routed)
+      * [What You Need:](#what-you-need)
   * [Final example with microservices architecture](#final-example-with-microservices-architecture)
     * [1️⃣ ClusterIssuer (for cert-manager TLS)](#1-clusterissuer-for-cert-manager-tls)
     * [2️⃣ Ingress Controller Deployment + 3️⃣ LoadBalancer Service (ELB)](#2-ingress-controller-deployment--3-loadbalancer-service-elb)
@@ -59,8 +59,8 @@ Kubernetes
     * [**3. Kubernetes RBAC (Role-Based Access Control)**](#3-kubernetes-rbac-role-based-access-control)
     * [**4. CNI (Container Network Interface)**](#4-cni-container-network-interface)
     * [**5. OIDC (OpenID Connect)**](#5-oidc-openid-connect)
-    * [🔁 How They All Interact in Real-World Architecture](#-how-they-all-interact-in-real-world-architecture)
-    * [✅ Summary Table](#-summary-table-1)
+    * [How They All Interact in Real-World Architecture](#how-they-all-interact-in-real-world-architecture)
+    * [Summary Table](#summary-table-1)
     * [Steps to create one custom resource (CR)](#steps-to-create-one-custom-resource-cr)
     * [UNIVERSAL WORKFLOW FOR CUSTOM RESOURCE SETUP (ACROSS CLOUDS)](#universal-workflow-for-custom-resource-setup-across-clouds)
     * [**2️⃣ Connect to Your Cloud Cluster**](#2-connect-to-your-cloud-cluster)
@@ -372,7 +372,7 @@ Operators:
 
 ---
 
-### 🧠 Summary Table
+### Summary Table
 
 | Command                                       | Works In Same Namespace? | Works In Other Namespaces? | Best For                     |
 | --------------------------------------------- | ------------------------ | -------------------------- | ---------------------------- |
@@ -433,7 +433,7 @@ subsets:
 
 An **`ExternalName` Service** is a special kind of Service in Kubernetes that **does not use Endpoints at all**.
 
-### 📌 Key Differences
+### Key Differences
 
 | Feature                     | ClusterIP/NodePort Services   | ExternalName Service |
 | --------------------------- | ----------------------------- | -------------------- |
@@ -442,7 +442,7 @@ An **`ExternalName` Service** is a special kind of Service in Kubernetes that **
 | Redirects to external name? | ❌ No                          | ✅ Yes (DNS CNAME)    |
 | Resolvable inside cluster?  | ✅ Yes                         | ✅ Yes                |
 
-### 🔍 How it Works
+### How it Works
 
 An `ExternalName` service simply acts like a **DNS alias** (CNAME). When a pod does this:
 
@@ -480,7 +480,7 @@ curl http://my-external-service.default.svc.cluster.local
 will go to `api.external-service.com` directly.
 
 
-### 🔗 Key Point
+### Key Point
 
 **Unlike regular Services**, `ExternalName` **does not use or need an Endpoints object**.
 
@@ -539,9 +539,9 @@ You'll need an Ingress Controller running in your cluster for this to work.
 If you're deploying on **AWS**, here’s how to correctly set up **Service Type: LoadBalancer (2)** and **Ingress (3)** in production or test environments:
 
 
-### 🔹 2. **LoadBalancer Service (AWS ELB)**
+### 2. **LoadBalancer Service (AWS ELB)**
 
-#### 🧾 YAML
+#### YAML
 
 ```yaml
 apiVersion: v1
@@ -564,7 +564,7 @@ spec:
   replicas: 2
 ```
 
-#### ✅ Steps
+#### Steps
 
 1. **Apply the YAML**:
 
@@ -588,7 +588,7 @@ spec:
 
 ---
 
-### 🔹 3. **Ingress (with NGINX Ingress Controller)**
+### 3. **Ingress (with NGINX Ingress Controller)**
 
 **Prerequisites**
 
@@ -606,7 +606,7 @@ helm install ingress-nginx ingress-nginx/ingress-nginx \
 
 ---
 
-#### 🧾 YAML for your app + ingress
+#### YAML for your app + ingress
 
 ```yaml
 apiVersion: v1
@@ -625,7 +625,7 @@ kind: Ingress
 metadata:
 ```
 
-#### ✅ Steps
+#### Steps
 
 1. **Apply your YAML**:
 
@@ -658,7 +658,7 @@ metadata:
 
 ---
 
-### 🧠 Summary
+### Summary
 
 | Method           | LoadBalancer               | Ingress                                    |
 | ---------------- | -------------------------- | ------------------------------------------ |
@@ -672,34 +672,34 @@ Absolutely — let’s add **precise responsibilities** for steps **3 (LoadBalan
 
 ---
 
-### ✅ Call Chain Recap with Roles
+### Call Chain Recap with Roles
 In a Kubernetes-on-AWS setup with **Ingress + Route 53**, here’s the **full service chain** involved from a client’s HTTP request all the way to your application code inside a Pod.
 
 #### Step-by-step call chain `curl http://myapp.example.com/`
 
-1. **🧑 Client**
+1. **Client**
    Makes a request to: `myapp.example.com`
 
-2. **🌐 Route 53 (DNS)**
+2. **Route 53 (DNS)**
    Resolves `myapp.example.com` → **ELB hostname**, e.g. `a1b2.elb.amazonaws.com`
 
-3. **📦 AWS ELB (e.g., NLB or ALB)**
+3. **AWS ELB (e.g., NLB or ALB)**
    Receives the HTTP(S) request and forwards it to a **Kubernetes node** (random healthy one) on the correct port
 
-4. **🎛️ Ingress Controller (e.g., NGINX or AWS ALB Controller)**
+4. **Ingress Controller (e.g., NGINX or AWS ALB Controller)**
 
   * Runs as a **Pod** in your cluster
   * Exposed via a `Service of type: LoadBalancer`
   * Receives request, matches host/path in **Ingress resource**
   * Routes request to the correct **Kubernetes Service**
 
-5. **🧩 Kubernetes Service (ClusterIP)**
+5. **Kubernetes Service (ClusterIP)**
 
   * Defined in Ingress backend
   * Maps to a set of **Pods** (based on `labelSelector`)
   * Acts as a **stable internal endpoint** for the app
 
-6. **🚀 Pod (your application)**
+6. **Pod (your application)**
 
   * Service forwards request to a matching Pod
   * Pod receives traffic on `targetPort` (e.g., `8080`)
@@ -707,7 +707,7 @@ In a Kubernetes-on-AWS setup with **Ingress + Route 53**, here’s the **full se
 
 ---
 
-#### 🔗 Example (For `myapp.example.com`):
+#### Example (For `myapp.example.com`):
 
 | Layer                | Resource Type          | Name                       |
 | -------------------- | ---------------------- | -------------------------- |
@@ -721,7 +721,7 @@ In a Kubernetes-on-AWS setup with **Ingress + Route 53**, here’s the **full se
 
 ---
 
-## 🔄 Diagram Summary:
+## Diagram Summary:
 
 ```
 curl → Route 53 → ELB (AWS) → Node → Ingress Controller → Ingress rules →
@@ -736,7 +736,7 @@ K8s Service (myapp) → Pod (your app code)
 
 ---
 
-### 🔧 Detailed Walkthrough with Comments in YAML
+### Detailed Walkthrough with Comments in YAML
 
 ```yaml
 # 5️⃣ K8s Service: Internal stable address for Ingress Controller to reach pods.
@@ -813,7 +813,7 @@ spec:
 
 ---
 
-### 🔄 Final Call Chain (with Responsibilities)
+### Final Call Chain (with Responsibilities)
 
 ```
 1️⃣ Client (curl http://myapp.example.com)
@@ -933,7 +933,7 @@ spec:
 
 ---
 
-#### 🌐 How Requests Are Routed:
+#### How Requests Are Routed:
 
 | Request URL                 | Backend Service |
 | --------------------------- | --------------- |
@@ -943,7 +943,7 @@ spec:
 
 ---
 
-#### ✅ What You Need:
+#### What You Need:
 
 * **Ingress Controller** installed (e.g., NGINX)
 * DNS or `/etc/hosts` pointing your domains to the Ingress ELB
@@ -1259,7 +1259,7 @@ For helm, a **complete working Helm-based microservices setup** that you can use
 
 ---
 
-**📁 Folder Structure**
+**Folder Structure**
 
 ```
 microservices-helm/
@@ -1612,7 +1612,7 @@ Without CNI, Pods can’t communicate — so your Ingress, Services, and multi-m
 
 ---
 
-### 🔁 How They All Interact in Real-World Architecture
+### How They All Interact in Real-World Architecture
 
 Imagine your EKS cluster with microservices behind an Ingress with TLS:
 
@@ -1626,7 +1626,7 @@ Imagine your EKS cluster with microservices behind an Ingress with TLS:
 
 ---
 
-### ✅ Summary Table
+### Summary Table
 
 | Concept                | Purpose                                 | Real Impact                                     |
 | ---------------------- | --------------------------------------- | ----------------------------------------------- |
@@ -1790,10 +1790,10 @@ kubectl apply -f config/samples/mycompany_v1_databasebackup.yaml
 
 | Reason                         | Explanation                                                                    |
 | ------------------------------ | ------------------------------------------------------------------------------ |
-| 🔁 **Fast Iteration**          | You can code → save → run immediately, without building/pushing Docker images. |
-| 🐞 **Debugging**               | Easier to debug locally with breakpoints or logs.                              |
-| 💻 **No cluster build needed** | You skip image building, uploading to registry, or Helm deployments.           |
-| 🧪 **Test CRD logic fast**     | Apply a sample custom resource and watch how your controller reacts instantly. |
+|  **Fast Iteration**          | You can code → save → run immediately, without building/pushing Docker images. |
+|  **Debugging**               | Easier to debug locally with breakpoints or logs.                              |
+|  **No cluster build needed** | You skip image building, uploading to registry, or Helm deployments.           |
+|  **Test CRD logic fast**     | Apply a sample custom resource and watch how your controller reacts instantly. |
 
 ---
 
@@ -1863,7 +1863,7 @@ Once your operator logic is tested and ready:
 
 Whether the **entire setup for a Custom Resource (CR)** and its **operator/controller**, created with **Kubebuilder**, will work **on any Kubernetes platform**, such as **AWS EKS**, **GCP GKE**, **Azure AKS**, etc. The answer is:
 
-> ✅ **Yes, it works on any CNCF-conformant Kubernetes cluster**, including managed services like EKS, GKE, and AKS.
+> **Yes, it works on any CNCF-conformant Kubernetes cluster**, including managed services like EKS, GKE, and AKS.
 
 Below is a **step-by-step confirmation** that walks through the full CR setup from local development to production deployment on any cloud platform.
 
@@ -1918,7 +1918,7 @@ Once you're connected:
 make install
 ```
 
-✅ This installs your **CustomResourceDefinition** into that cloud cluster.
+This installs your **CustomResourceDefinition** into that cloud cluster.
 
 ---
 
@@ -1936,7 +1936,7 @@ make install
    make deploy IMG=your-repo/your-operator:v1
    ```
 
-✅ This creates:
+This creates:
 
 * A **Deployment** in the `system` namespace
 * A **ServiceAccount** with RBAC
