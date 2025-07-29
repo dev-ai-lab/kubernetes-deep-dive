@@ -1640,7 +1640,7 @@ Imagine your EKS cluster with microservices behind an Ingress with TLS:
 
 ### Steps to create one custom resource (CR)
 
-Great! Let's **scaffold a Kubernetes Operator in Go using Kubebuilder** for the `DatabaseBackup` custom resource we just created. I’ll walk you through:
+We **scaffold a Kubernetes Operator in Go using Kubebuilder** for the `DatabaseBackup` custom resource:
 
 ---
 
@@ -1779,8 +1779,10 @@ kubectl apply -f databasebackup.yaml
 | `kubebuilder` | Helps scaffold and manage the entire logic |
 
 -------
+#### Demo:
 
-**Purpose of `make run`**
+![demo-steps-in-creating-one-customer-resource .gif](media/demo-steps-in-creating-one-customer-resource.gif)
+#### Purpose of `make run`**
 
 `make run` **runs the operator (controller)** as a **Go process on your local machine**, not in the cluster. This is mainly used during **development and testing**.
 
