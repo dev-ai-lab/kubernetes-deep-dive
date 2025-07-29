@@ -1768,7 +1768,7 @@ spec:
 Apply it:
 
 ```bash
-kubectl apply -f config/samples/mycompany_v1_databasebackup.yaml
+kubectl apply -f databasebackup.yaml
 ```
 
 
