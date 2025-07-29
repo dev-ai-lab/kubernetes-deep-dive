@@ -62,6 +62,8 @@ Kubernetes
     * [How They All Interact in Real-World Architecture](#how-they-all-interact-in-real-world-architecture)
     * [Summary Table](#summary-table-1)
     * [Steps to create one custom resource (CR)](#steps-to-create-one-custom-resource-cr)
+      * [Demo:](#demo)
+      * [Purpose of `make run`**](#purpose-of-make-run)
     * [UNIVERSAL WORKFLOW FOR CUSTOM RESOURCE SETUP (ACROSS CLOUDS)](#universal-workflow-for-custom-resource-setup-across-clouds)
     * [**2️⃣ Connect to Your Cloud Cluster**](#2-connect-to-your-cloud-cluster)
 <!-- TOC -->
