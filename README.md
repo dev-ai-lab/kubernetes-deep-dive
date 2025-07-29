@@ -1831,7 +1831,7 @@ go run ./main.go
 4. In another terminal:
 
    ```bash
-   kubectl apply -f config/samples/mycompany_v1_databasebackup.yaml
+   kubectl apply -f databasebackup.yaml
    ```
 5. See logs like:
 
