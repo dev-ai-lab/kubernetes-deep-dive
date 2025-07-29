@@ -63,7 +63,7 @@ Kubernetes
     * [Summary Table](#summary-table-1)
     * [Steps to create one custom resource (CR)](#steps-to-create-one-custom-resource-cr)
       * [Demo:](#demo)
-      * [Purpose of `make run`**](#purpose-of-make-run)
+    * [Additional Notes:](#additional-notes)
     * [UNIVERSAL WORKFLOW FOR CUSTOM RESOURCE SETUP (ACROSS CLOUDS)](#universal-workflow-for-custom-resource-setup-across-clouds)
     * [**2️⃣ Connect to Your Cloud Cluster**](#2-connect-to-your-cloud-cluster)
 <!-- TOC -->
@@ -1784,7 +1784,9 @@ kubectl apply -f databasebackup.yaml
 #### Demo:
 
 ![demo-steps-in-creating-one-customer-resource .gif](media/demo-steps-in-creating-one-customer-resource.gif)
-#### Purpose of `make run`**
+
+### Additional Notes:
+**Purpose of `make run`**
 
 `make run` **runs the operator (controller)** as a **Go process on your local machine**, not in the cluster. This is mainly used during **development and testing**.
 
